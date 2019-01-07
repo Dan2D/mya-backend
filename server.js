@@ -6,19 +6,21 @@ const logger = require("morgan");
 const router = require('./routes');
 
 const app = express();
+
+// use middlewares
 app.use(require('cors')());
+app.use(require('cookie-parser')());
 
 // connects our back end code with the database
 mongoose.connect(
     process.env.DB_CONN_STRING,
-    { useNewUrlParser: true }
+    { useCreateIndex: true, useNewUrlParser: true }
 );
 
 let db = mongoose.connection;
 
-db.once("open", () => console.log("connected to the database"));
-
 // checks if connection with the database is successful
+db.once("open", () => console.log("connected to the database"));
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
 // (optional) only made for logging and
