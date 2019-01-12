@@ -1,66 +1,66 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-const bcrypt = require('bcrypt');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const bcrypt = require('bcrypt')
 
-const saltRounds = 10;
+const saltRounds = 10
 
 // this will be our data base's data structure
 const UserSchema = new Schema(
-    {
-        username: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        email: {
-            type: String,
-            required: true,
-            unique: true
-        },
-        password: {
-            type: String,
-            required: true
-        },
-        lastLogged: {
-            type: Date,
-            default: Date.now()
-        },
-        roleID: {
-            type: Number,
-            default: 3
-        }
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true
     },
-    { timestamps: true }
-);
+    email: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    password: {
+      type: String,
+      required: true
+    },
+    lastLogged: {
+      type: Date,
+      default: Date.now()
+    },
+    roleID: {
+      type: Number,
+      default: 3
+    }
+  },
+  { timestamps: true }
+)
 
 UserSchema.pre('save', function (next) {
-    // Check if document is new or a new password has been set
-    if (this.isNew || this.isModified('password')) {
-        // Saving reference to this because of changing scopes
-        const document = this;
-        bcrypt.hash(document.password, saltRounds,
-            (err, hashedPassword) => {
-                if (err) {
-                    next(err);
-                } else {
-                    document.password = hashedPassword;
-                    next();
-                }
-            });
-    } else {
-        next();
-    }
-});
+  // Check if document is new or a new password has been set
+  if (this.isNew || this.isModified('password')) {
+    // Saving reference to this because of changing scopes
+    const document = this
+    bcrypt.hash(document.password, saltRounds,
+      (err, hashedPassword) => {
+        if (err) {
+          next(err)
+        } else {
+          document.password = hashedPassword
+          next()
+        }
+      })
+  } else {
+    next()
+  }
+})
 
 UserSchema.methods.isValidPassword = function (password, callback) {
-    bcrypt.compare(password, this.password, function (err, same) {
-        if (err) {
-            callback(err);
-        } else {
-            callback(err, same);
-        }
-    });
+  bcrypt.compare(password, this.password, function (err, same) {
+    if (err) {
+      callback(err)
+    } else {
+      callback(err, same)
+    }
+  })
 }
 
 // export the new Schema so we could modify it using Node.js
-module.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model('User', UserSchema)
