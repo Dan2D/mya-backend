@@ -45,12 +45,17 @@ exports.login = (res, req) => {
                         });
                 } else {
                     // Issue token
-                    const payload = { email };
-                    const token = jwt.sign(payload, secret, {
-                        expiresIn: '1h'
-                    });
-                    res.cookie('token', token, { httpOnly: true })
-                        .sendStatus(200);
+                  const payload = {
+                    exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                    email
+                  };
+                  const token = jwt.sign(payload, secret);
+                  res.status(200)
+                    .json({
+                      token: token
+                    })
+                  res.cookie('token', token, { httpOnly: true })
+                      .sendStatus(200);
                 }
             });
         }
