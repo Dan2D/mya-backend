@@ -3,7 +3,7 @@ const User = require('../models/user')
 
 const secret = process.env.JWT_SECRET_KEY
 
-exports.login = (res, req) => {
+exports.login = function(req, res){
   const { email, password } = req.body
   User.findOne({ email }, (err, user) => {
     if (err) {
