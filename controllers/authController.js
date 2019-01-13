@@ -20,23 +20,39 @@ exports.login = (res, req) => {
     } else {
       user.isValidPassword(password, (err, same) => {
         if (err) {
-          res.status(500)
-            .json({
-              error: 'Internal error please try again'
-            })
-        } else if (!same) {
-          res.status(401)
-            .json({
-              error: 'Incorrect email or password'
-            })
+            res.status(500)
+                .json({
+                    message: 'Internal error please try again',
+                    error: err
+                });
+        } else if (!user) {
+            res.status(401)
+                .json({
+                    message: 'Incorrect email or password'
+                });
         } else {
-          // Issue token
-          const payload = { email }
-          const token = jwt.sign(payload, secret, {
-            expiresIn: '1h'
-          })
-          res.cookie('token', token, { httpOnly: true })
-            .sendStatus(200)
+            user.isValidPassword(password, (err, same) => {
+                if (err) {
+                    res.status(500)
+                        .json({
+                            message: 'Internal error please try again',
+                            error: err
+                        });
+                } else if (!same) {
+                    res.status(401)
+                        .json({
+                            message: 'Incorrect email or password'
+                        });
+                } else {
+                    // Issue token
+                    const payload = { email };
+                    const token = jwt.sign(payload, secret, {
+                        expiresIn: '1h'
+                    });
+                    res.cookie('token', token, { httpOnly: true })
+                        .sendStatus(200);
+                }
+            });
         }
       })
     }
