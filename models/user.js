@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const bcrypt = require('bcrypt')
+const uniqueValidator = require('mongoose-unique-validator')
 
 const saltRounds = 10
 
@@ -10,12 +11,12 @@ const UserSchema = new Schema(
     username: {
       type: String,
       required: true,
-      unique: true
+      unique: 'Username taken.'
     },
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: 'An account with that email already exists.'
     },
     password: {
       type: String,
@@ -32,6 +33,8 @@ const UserSchema = new Schema(
   },
   { timestamps: true }
 )
+
+UserSchema.plugin(uniqueValidator)
 
 UserSchema.pre('save', function (next) {
   // Check if document is new or a new password has been set
