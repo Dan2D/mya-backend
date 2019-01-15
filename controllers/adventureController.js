@@ -8,7 +8,7 @@ exports.create = function (req, res) {
         if (err) {
             res.status(500)
                 .json({
-                    message: 'Error adding new adventure, please try again.',
+                    message: 'Error adding new adventure, please try again',
                     error: err
                 })
         } else {
