@@ -13,5 +13,4 @@ const ChoiceSchema = new Schema({
     }
 })
 
-// module.exports = mongoose.model('Choice', ChoiceSchema)
 module.exports = ChoiceSchema

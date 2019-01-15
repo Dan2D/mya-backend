@@ -4,5 +4,7 @@ const withAuth = require('../lib/middleware')
 
 router.post('/', withAuth, adventure.create)
 router.delete('/:adventureId', withAuth, adventure.delete)
+router.put('/:adventureId', withAuth, adventure.update)
+router.get('/', withAuth, adventure.get)
 
 module.exports = router

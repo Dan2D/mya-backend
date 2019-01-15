@@ -17,5 +17,4 @@ const PageSchema = new Schema({
     choices: [ChoiceSchema]
 })
 
-// module.exports = mongoose.model('Page', PageSchema)
 module.exports = PageSchema
