@@ -9,13 +9,23 @@ exports.create = function (req, res) {
   const user = new User({ username, email, password })
   user.save(function (err) {
     if (err) {
+      let errMsg, errors
+      if (err.name === 'ValidationError') {
+        errors = Object.values(err.errors).map(error => {
+          let { message } = error
+          return { message }
+        })
+      } else {
+        errMsg = 'An unexpected error occurred, please try again.'
+      }
       res.status(500)
         .json({
-          message: 'Error registering new user please try again.',
-          error: err
+          errors,
+          code: 500,
+          message: errMsg
         })
     } else {
-      res.status(200).json({ message: 'Welcome to the club!' })
+      res.sendStatus(201)
     }
   })
 }
