@@ -1,11 +1,13 @@
 const router = require('express').Router()
 const auth = require('../controllers/authController')
-// const withAuth = require('../lib/middleware')
+const withAuth = require('../lib/middleware')
 
 router.post('/', auth.login)
 
-// router.get('/token', withAuth, function (req, res) {
-//   res.sendStatus(200)
-// })
+router.post('/verify', auth.verify)
+
+router.get('/token', withAuth, function (req, res) {
+  res.sendStatus(200)
+})
 
 module.exports = router
