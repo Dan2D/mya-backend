@@ -22,14 +22,16 @@ const UserSchema = new Schema(
       type: String,
       required: true
     },
-    lastLogged: {
-      type: Date,
-      default: Date.now()
-    },
     roleID: {
       type: Number,
       default: 3
-    }
+    },
+    verified: {
+      type: Boolean,
+      default: false
+    },
+    passwordResetToken: String,
+    passwordResetExpires: Date
   },
   { timestamps: true }
 )
