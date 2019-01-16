@@ -6,6 +6,8 @@ router.post('/', auth.login)
 
 router.post('/verify', auth.verify)
 
+router.post('/confirm-token', auth.sendNewToken)
+
 router.get('/token', withAuth, function (req, res) {
   res.sendStatus(200)
 })

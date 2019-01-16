@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const Token = require('../models/token')
+const crypto = require('crypto')
+const emailer = require('../lib/emailer')
 
 const secret = process.env.JWT_SECRET_KEY
 
@@ -68,7 +70,7 @@ exports.verify = function (req, res) {
       res.status(400).json({
         type: 'InvalidToken',
         code: 400,
-        message: 'Invalid token.'
+        message: 'Token invalid or expired.'
       })
     } else {
       User.findOne({
@@ -83,6 +85,31 @@ exports.verify = function (req, res) {
             else res.sendStatus(200)
           })
         }
+      })
+    }
+  })
+}
+
+exports.sendNewToken = function (req, res) {
+  const { email } = req.body
+  User.findOne({ email }).exec(function (err, user) {
+    if (err) {
+      return errCallback(err, res)
+    } else if (!user) {
+      res.status(500).json({ code: 500, message: 'No user found.' })
+    } else {
+      const token = new Token({ userId: user._id, token: crypto.randomBytes(16).toString('hex') })
+      token.save(function (err) {
+        if (err) console.log(err)
+        else {
+          emailer.sendConfirmationEmail(email, token).then(
+            () => console.log('Email sent successfully!'),
+            err => console.log(err)
+          )
+        }
+      })
+      res.status(200).json({
+        message: `A new email was sent to ${email}. It should arrive shortly.`
       })
     }
   })

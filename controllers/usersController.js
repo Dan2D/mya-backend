@@ -2,9 +2,9 @@ const User = require('../models/user')
 const crypto = require('crypto')
 const Token = require('../models/token')
 const emailer = require('../lib/emailer')
-const emails = require('../lib/emails')
+const jwt = require('jsonwebtoken')
 
-let { confirmationEmail } = emails
+const secret = process.env.JWT_SECRET_KEY
 
 exports.fetchAll = function (req, res) {
   res.json()
@@ -35,16 +35,27 @@ exports.create = function (req, res) {
       token.save(function (err) {
         if (err) console.log(err)
         else {
-          emailer.sendEmail(email, {
-            subject: 'Please Confirm your Email',
-            html: confirmationEmail(`${process.env.CLIENT_ROOT}/verify?token=${token.token}`)
-          }).then(
+          emailer.sendConfirmationEmail(email, token).then(
             () => console.log('yay'),
             err => console.log(err)
           )
         }
       })
-      res.sendStatus(201)
+      // Issue token
+      const payload = {
+        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        user: {
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          roleID: user.roleID,
+          verified: user.verified
+        }
+      }
+      const userToken = jwt.sign(payload, secret)
+      res.status(201).json({
+        token: userToken
+      })
     }
   })
 }
