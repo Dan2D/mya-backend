@@ -12,7 +12,7 @@ exports.create = function (req, res) {
           error: err
         })
     } else {
-      res.status(201).send()
+      res.status(201).send(adventure)
     }
   })
 }
