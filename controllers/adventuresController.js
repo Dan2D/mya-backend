@@ -4,17 +4,17 @@ exports.create = function (req, res) {
     const { name, description, image, nsfw } = req.body
     const adventure = new Adventure({ name, description, image, nsfw, owner: req.user.id })
 
-    adventure.save(function (err) {
-        if (err) {
-            res.status(500)
-                .json({
-                    message: 'Error adding new adventure, please try again',
-                    error: err
-                })
-        } else {
-            res.status(201).send()
-        }
-    })
+  adventure.save(function (err) {
+    if (err) {
+      res.status(500)
+        .json({
+          message: 'Error adding new adventure, please try again',
+          error: err
+        })
+    } else {
+      res.status(201).send(adventure)
+    }
+  })
 }
 
 exports.getAll = function (req, res) {
