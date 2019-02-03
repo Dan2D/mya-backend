@@ -1,10 +1,11 @@
 const router = require('express').Router()
-const adventures = require('../controllers/adventuresController')
+const adventure = require('../controllers/adventureController')
 const withAuth = require('../lib/middleware')
 
-router.post('/', withAuth, adventures.create)
-router.delete('/:adventureId', withAuth, adventures.delete)
-router.put('/:adventureId', withAuth, adventures.update)
-router.get('/', withAuth, adventures.get)
+router.post('/', withAuth, adventure.create)
+router.delete('/:adventureId', withAuth, adventure.delete)
+router.put('/:adventureId', withAuth, adventure.update)
+router.get('/', withAuth, adventure.getAll)
+router.get('/:adventureId', withAuth, adventure.getById)
 
 module.exports = router

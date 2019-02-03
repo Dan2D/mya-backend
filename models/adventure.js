@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 const PageSchema = require('./page')
 
 const AdventureSchema = new Schema(
@@ -11,11 +12,19 @@ const AdventureSchema = new Schema(
     description: String,
     image: String,
     owner: {
-      type: String,
+      type: ObjectId,
       required: true
     },
     pages: [PageSchema],
     nsfw: {
+      type: Boolean,
+      default: false
+    },
+    published: {
+      type: Boolean,
+      default: false
+    },
+    private: {
       type: Boolean,
       default: false
     }

@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const Adventure = require('../models/adventure')
 const crypto = require('crypto')
 const Token = require('../models/token')
 const emailer = require('../lib/emailer')
@@ -55,6 +56,54 @@ exports.create = function (req, res) {
       const userToken = jwt.sign(payload, secret)
       res.status(201).json({
         token: userToken
+      })
+    }
+  })
+}
+
+exports.getAdventures = function (req, res) {
+
+  const { userId } = req.params
+
+  User.findOne({username: userId}, function(err, user){
+    if(err){
+      res.status(500)
+      .json({
+        message: 'Error getting user info',
+        error: err
+      })
+    }
+    else {
+      if(!user){
+        res.status(400)
+        .json({
+          message: 'The provided user does not exist'
+        })
+        return
+      } 
+    
+      let options = { owner: user._id }
+      
+      if (userId !== req.user.username) {
+        options = {
+          ...options,
+          published: true,
+          private: false
+        }
+      }
+    
+      Adventure.find(options, function (err, docs) {
+        if (err) {
+          res.status(500)
+            .json({
+              message: 'Error getting adventures',
+              error: err
+            })
+        }
+        else {
+          res.status(200)
+            .json(docs)
+        }
       })
     }
   })
